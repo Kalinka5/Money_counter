@@ -1,5 +1,5 @@
 from gmail import get_mails_list, parsing_letters
-from spreadsheet import get_columns_update_query, get_rows_update_query, spreadsheet_chunks_update
+from spreadsheet import get_columns_update_query, get_rows_update_query, spreadsheet_chunks_update, get_column
 from typing import List
 from logger import Logger
 import traceback
@@ -94,7 +94,7 @@ if __name__ == '__main__':
         data_apple_music = []
         data_icloud = []
         other_data = []
-        summa = 0
+
         for data in result:
             if data[0] == 'Apple Music':
                 data_apple_music.append(data[1])
@@ -102,16 +102,25 @@ if __name__ == '__main__':
                 data_icloud.append(data[1])
             elif data[0] == 'Additional app':
                 other_data.append(data[1])
-            summa += float(data[1].replace(",", "."))
 
         table_data = [
             get_columns_update_query(data_apple_music, sheetName, columnAppleMusic, 2, len(data_apple_music) + 1),
             get_columns_update_query(data_icloud, sheetName, column_iCloud, 2, len(data_apple_music) + 1),
             get_columns_update_query(other_data, sheetName, other_column, 2, len(data_apple_music) + 1)]
-
         spreadsheet_chunks_update(spreadsheetService, table_data, tableID, logger)
+
+        money_Apple_music = get_column(spreadsheetService, tableID, sheetName, columnAppleMusic, minIndex)
+        money_iCloud = get_column(spreadsheetService, tableID, sheetName, column_iCloud, minIndex)
+        other_money = get_column(spreadsheetService, tableID, sheetName, other_column, minIndex)
+        list_sum = money_Apple_music + money_iCloud + other_money
+        summa = 0
+
+        for i in list_sum:
+            summa += float(i.replace(",", "."))
+
         summa_d = f"{summa:.2f}"
         summa_h = f"{summa*40:.2f}"
+
         table_sum_data = [
             get_rows_update_query([summa_d, summa_h], sheetName, column_d, column_h, 2)
         ]
