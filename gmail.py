@@ -3,6 +3,9 @@ from bs4 import BeautifulSoup
 from traceback import format_exc
 import re
 from logger import Logger
+import os
+import sys
+from googleapiclient.errors import HttpError
 
 
 def get_mails_list(service, query: str, grab_per_query=500):
@@ -40,6 +43,8 @@ def parsing_letters(service, messages: list, logger: Logger):
     for msg in messages:
         subject = ""
         message = ""
+        body_html = ""
+        money = ""
 
         # Get the message from its id
         txt = service.users().messages().get(userId='me', id=msg['id']).execute()
@@ -60,9 +65,9 @@ def parsing_letters(service, messages: list, logger: Logger):
                 for part in parts:
                     body = part.get("body")
                     data = body.get("data")
-                    mimeType = part.get("mimeType")
+                    mime_type = part.get("mimeType")
 
-                    if mimeType == 'text/html':
+                    if mime_type == 'text/html':
                         body_html = base64.urlsafe_b64decode(data)
 
                 soup = BeautifulSoup(body_html, "lxml")
@@ -88,3 +93,23 @@ def parsing_letters(service, messages: list, logger: Logger):
             logger.error(format_exc())
 
     return result
+
+
+def delete_emails(service, messages_for_trash, log):
+    try:
+        if messages_for_trash:
+            ids = []
+            for info_msg in messages_for_trash:
+                ids.append(info_msg['id'])
+            service.users().messages().batchModify(
+                userId='me',
+                body={
+                    "ids": [ids],
+                    'addLabelIds': ['TRASH']
+                }).execute()
+        log.info(f"Deleting {len(messages_for_trash)} mails")
+    except HttpError as e:
+        exc_type, _, exc_tb = sys.exc_info()
+        log.error(f'Unexpected error {exc_type} at {os.path.split(__file__)[1]} at line {exc_tb.tb_next.tb_lineno}.\n'
+                  f'Info: {e}', isError=True)
+

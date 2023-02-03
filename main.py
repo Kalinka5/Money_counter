@@ -1,4 +1,4 @@
-from gmail import get_mails_list, parsing_letters
+from gmail import get_mails_list, parsing_letters, delete_emails
 from spreadsheet import get_columns_update, get_rows_update, spreadsheet_chunks_update, get_last_index, get_part_of_table
 from typing import List
 from logger import Logger
@@ -137,6 +137,9 @@ if __name__ == '__main__':
         ]
         # Update columns Sum($) and Sum(₴)
         spreadsheet_chunks_update(spreadsheet, table_sum_data, table_id, logger)
+
+        # Delete mails from email address
+        delete_emails(gmail_service, mails, logger)
 
     except Exception:
         logger.error(traceback.format_exc())
