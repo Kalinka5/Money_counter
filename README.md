@@ -11,7 +11,9 @@ PROGRAM IS USED TO **COUNT YOUR SUBSCRIPTIONS SPENDING** BY USING **GOOGLE** AND
 ## *Usage*
 First of all, to use this program, you should create [new project](https://console.cloud.google.com/projectcreate?previousPage=%2Fwelcome%3Fproject%3Dmoneycounter-376608%26authuser%3D1&organizationId=0&authuser=1) in Google Cloud. After creation the project, go to the APIs & Services in navigation menu. Choose Library section. Then, in the search field input Gmail API click on this app and click on button "Enable". With Google Sheets API do the same things.
 
-Secondly, create new sheet in the [Google Sheets](https://www.google.com/sheets/about/). Further, add column names for comfort.
+Secondly, create new sheet in the [Google Sheets](https://www.google.com/sheets/about/). Further, add column names for comfort:
+
+![empty_table](https://user-images.githubusercontent.com/106172806/216630610-f76a5e5d-854c-441a-b7a2-b1249701e887.jpg)
 
 Last but not least, you should install some packages:
 + [more-itertools](https://pypi.org/project/more-itertools/)
