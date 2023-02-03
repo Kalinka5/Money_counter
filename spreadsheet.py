@@ -26,13 +26,52 @@ def get_column(spreadsheets, spreadsheet_id: str, sheet_name: str, column_name: 
     return result
 
 
-def get_last_index(spreadsheets, spreadsheet_id: str, sheet_name: str, column_name: str, min_index: int):
-    column = get_column(spreadsheets, spreadsheet_id, sheet_name, column_name, min_index)
-    max_index = len(column)
-    return max_index + min_index
+def get_part_of_table(spreadsheets, spreadsheet_id: str, sheet_name: str, column_start: str,
+                      column_end: str, min_index: int, max_index: int):
+    """
+    Getting a part of the table, returns a list with the values of the column
+    :param spreadsheets: spreadsheets of sheets api service
+    :param spreadsheet_id: table id
+    :param sheet_name: sheet name
+    :param column_start: initial column
+    :param column_end: final column
+    :param min_index: minimal index to read
+    :param max_index: maximum index to read
+    :return: list
+    """
+    result = []
+
+    sheet_range = sheet_name + f"!{column_start}{min_index}:{column_end}{max_index}"
+    data = spreadsheets.values().get(spreadsheetId=spreadsheet_id, range=sheet_range).execute().get('values', [])
+
+    for row in data:
+        for value in row:
+            result.append(value)
+
+    return result
 
 
-def get_columns_update_query(data: List[str], sheet_name: str, column: str, row_index_start: int, row_index_end: int):
+def get_last_index(spreadsheets, spreadsheet_id: str, sheet_name: str, column_names: List[str], min_index: int):
+    """
+    Function to get first empty cells in the columns
+    :param spreadsheets:
+    :param spreadsheet_id: table id
+    :param sheet_name: sheet name
+    :param column_names: list of column's names
+    :param min_index: minimal index to read
+    :return: list
+    """
+    result = []
+
+    for column in column_names:
+        column_data = get_column(spreadsheets, spreadsheet_id, sheet_name, column, min_index)
+        max_index = len(column_data) + min_index
+        result.append(max_index)
+
+    return result
+
+
+def get_columns_update(data: List[str], sheet_name: str, column: str, row_index_start: int, row_index_end: int):
     """
     Returns a dictionary for updating multiple table columns
     :param data: list of data
@@ -49,7 +88,7 @@ def get_columns_update_query(data: List[str], sheet_name: str, column: str, row_
     }
 
 
-def get_rows_update_query(data: List[str], sheet_name: str, column_start: str, column_end: str, row_index: int):
+def get_rows_update(data: List[str], sheet_name: str, column_start: str, column_end: str, row_index: int):
     """
     Returns a dictionary for updating multiple table rows
     :param data: list of data
