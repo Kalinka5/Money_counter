@@ -3,7 +3,7 @@ from logger import Logger
 from more_itertools import chunked
 
 
-def get_column(spreadsheets, spreadsheet_id: str, sheet_name: str, column_name: str, min_index: str, max_index=""):
+def get_column(spreadsheets, spreadsheet_id: str, sheet_name: str, column_name: str, min_index: int, max_index=""):
     """
     Getting a column from a table, returns a list with the values of the column
     :param spreadsheets: spreadsheets of sheets api service
@@ -15,7 +15,7 @@ def get_column(spreadsheets, spreadsheet_id: str, sheet_name: str, column_name: 
     :return: list
     """
     result = []
-    sheet_range = sheet_name + "!{0}{1}:{0}{2}".format(column_name, min_index, max_index)
+    sheet_range = sheet_name + f"!{column_name}{min_index}:{column_name}{max_index}"
     data = spreadsheets.values().get(spreadsheetId=spreadsheet_id, range=sheet_range).execute().get('values', [])
 
     for row in data:
@@ -24,6 +24,12 @@ def get_column(spreadsheets, spreadsheet_id: str, sheet_name: str, column_name: 
         except IndexError:
             result.append('')
     return result
+
+
+def get_last_index(spreadsheets, spreadsheet_id: str, sheet_name: str, column_name: str, min_index: int):
+    column = get_column(spreadsheets, spreadsheet_id, sheet_name, column_name, min_index)
+    max_index = len(column)
+    return max_index + min_index
 
 
 def get_columns_update_query(data: List[str], sheet_name: str, column: str, row_index_start: int, row_index_end: int):
@@ -45,12 +51,13 @@ def get_columns_update_query(data: List[str], sheet_name: str, column: str, row_
 
 def get_rows_update_query(data: List[str], sheet_name: str, column_start: str, column_end: str, row_index: int):
     """
-    Возвращает словарь для обновления нескольких ячеек таблицы
-        data - список данных для записи,
-        sheetName - название листа таблицы, куда записываются данные
-        columnStart - буква колонки, с которой начинается запись
-        columnEnd - буква колонки, на которой заканчивается запись
-        rowIndex - номер строки, в которую записываются данные
+    Returns a dictionary for updating multiple table rows
+    :param data: list of data
+    :param sheet_name: sheet name
+    :param column_start: initial column
+    :param column_end: final column
+    :param row_index: row index
+    :return: dict
     """
     return {
         "range": f"{sheet_name}!{column_start}{row_index}:{column_end}{row_index}",
@@ -71,8 +78,8 @@ def spreadsheet_chunks_update(spreadsheets, data: list, spreadsheet_id: str, log
     """
     for chunk in chunked(data, cells_per_update):
         if logger:
-            logger.info(f"Updating {len(chunk)} columns")
-        results = spreadsheets.values().batchUpdate(
+            logger.info(f"Start updating the table.")
+        spreadsheets.values().batchUpdate(
             spreadsheetId=spreadsheet_id,
             body={
                     "valueInputOption": "USER_ENTERED",
@@ -80,4 +87,4 @@ def spreadsheet_chunks_update(spreadsheets, data: list, spreadsheet_id: str, log
                 }
             ).execute()
         if logger:
-            logger.info(f"Updated rows: {results['totalUpdatedRows']}")
+            logger.info("The update was successful.\n")

@@ -1,5 +1,5 @@
 from gmail import get_mails_list, parsing_letters
-from spreadsheet import get_columns_update_query, get_rows_update_query, spreadsheet_chunks_update, get_column
+from spreadsheet import get_columns_update_query, get_rows_update_query, spreadsheet_chunks_update, get_column, get_last_index
 from typing import List
 from logger import Logger
 import traceback
@@ -76,15 +76,15 @@ if __name__ == '__main__':
         sheet_service = create_service(CLIENT_SECRET_FILE, "sheets", "v4", SCOPES, config["gmail"], logger)
         gmail_service = create_service(CLIENT_SECRET_FILE, "gmail", "v1", SCOPES, config["gmail"], logger)
 
-        tableID = config["spreadsheetID"]
-        sheetName = config["sheetName"]
-        columnAppleMusic = config["columnAppleMusic"]
-        column_iCloud = config["column_iCloud"]
-        other_column = config["other_column"]
-        column_d = config["columnd"]
-        column_h = config["columnh"]
-        minIndex = config["minIndex"]
-        spreadsheetService = sheet_service.spreadsheets()
+        table_id = config["spreadsheetID"]
+        sheet_name = config["sheetName"]
+        column_music = config["columnAppleMusic"]
+        column_cloud = config["column_iCloud"]
+        column_others = config["other_column"]
+        dollar_column = config["dollar_column"]
+        uah_column = config["UAH_column"]
+        min_index = config["minIndex"]
+        spreadsheet = sheet_service.spreadsheets()
 
         # Get all id mails with key-word q.
         mails = get_mails_list(gmail_service, config["q"])
@@ -103,18 +103,22 @@ if __name__ == '__main__':
             elif data[0] == 'Additional app':
                 other_data.append(data[1])
 
+        last_index_music = get_last_index(spreadsheet, table_id, sheet_name, column_music, min_index)
+        last_index_cloud = get_last_index(spreadsheet, table_id, sheet_name, column_cloud, min_index)
+        last_index_other = get_last_index(spreadsheet, table_id, sheet_name, column_others, min_index)
+
         table_data = [
-            get_columns_update_query(data_apple_music, sheetName, columnAppleMusic, 2, len(data_apple_music) + 1),
-            get_columns_update_query(data_icloud, sheetName, column_iCloud, 2, len(data_apple_music) + 1),
-            get_columns_update_query(other_data, sheetName, other_column, 2, len(data_apple_music) + 1)]
-        spreadsheet_chunks_update(spreadsheetService, table_data, tableID, logger)
+            get_columns_update_query(data_apple_music, sheet_name, column_music, last_index_music, len(data_apple_music)+1),
+            get_columns_update_query(data_icloud, sheet_name, column_cloud, last_index_cloud, len(data_apple_music)+1),
+            get_columns_update_query(other_data, sheet_name, column_others, last_index_other, len(data_apple_music)+1)]
+        spreadsheet_chunks_update(spreadsheet, table_data, table_id, logger)
 
-        money_Apple_music = get_column(spreadsheetService, tableID, sheetName, columnAppleMusic, minIndex)
-        money_iCloud = get_column(spreadsheetService, tableID, sheetName, column_iCloud, minIndex)
-        other_money = get_column(spreadsheetService, tableID, sheetName, other_column, minIndex)
+        money_Apple_music = get_column(spreadsheet, table_id, sheet_name, column_music, min_index)
+        money_iCloud = get_column(spreadsheet, table_id, sheet_name, column_cloud, min_index)
+        other_money = get_column(spreadsheet, table_id, sheet_name, column_others, min_index)
         list_sum = money_Apple_music + money_iCloud + other_money
-        summa = 0
 
+        summa = 0
         for i in list_sum:
             summa += float(i.replace(",", "."))
 
@@ -122,9 +126,9 @@ if __name__ == '__main__':
         summa_h = f"{summa*40:.2f}"
 
         table_sum_data = [
-            get_rows_update_query([summa_d, summa_h], sheetName, column_d, column_h, 2)
+            get_rows_update_query([summa_d, summa_h], sheet_name, dollar_column, uah_column, min_index)
         ]
-        spreadsheet_chunks_update(spreadsheetService, table_sum_data, tableID, logger)
+        spreadsheet_chunks_update(spreadsheet, table_sum_data, table_id, logger)
 
     except Exception:
         logger.error(traceback.format_exc())

@@ -6,7 +6,7 @@
   "columnAppleMusic": "A",
   "column_iCloud": "B",
   "other_column": "C",
-  "columnd": "D",
-  "columnh": "E",
-  "minIndex": "2"
+  "dollar_column": "D",
+  "UAH_column": "E",
+  "minIndex": 2
 }
