@@ -146,4 +146,9 @@ As a result, we will get the filled table:
 
 ![update_table](https://user-images.githubusercontent.com/106172806/216629752-01a516ad-d76c-40d9-8096-91c0c16dfa5d.jpg)
 
+And delete these letters from our email address:
+```python
+# Delete mails from email address
+delete_emails(gmail_service, mails, logger)
+```
 ___
