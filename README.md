@@ -6,8 +6,6 @@
 
 PROGRAM IS USED TO **COUNT YOUR SUBSCRIPTIONS SPENDING** BY USING **GOOGLE** AND **SPREADSHEETS API**S.
 
-![Gif](https://user-images.githubusercontent.com/106172806/216621787-bd1a4a66-377f-467c-a371-9d2d00fd30b3.gif)
-
 ![Money](https://user-images.githubusercontent.com/106172806/216789011-9b0dc0f5-700c-4c66-a1a3-4393c1f24cd0.gif)
 
 ## *Usage*
