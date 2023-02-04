@@ -8,6 +8,8 @@ PROGRAM IS USED TO **COUNT YOUR SUBSCRIPTIONS SPENDING** BY USING **GOOGLE** AND
 
 ![Gif](https://user-images.githubusercontent.com/106172806/216621787-bd1a4a66-377f-467c-a371-9d2d00fd30b3.gif)
 
+![Money](https://user-images.githubusercontent.com/106172806/216789011-9b0dc0f5-700c-4c66-a1a3-4393c1f24cd0.gif)
+
 ## *Usage*
 First of all, to use this program, you should create [new project](https://console.cloud.google.com/projectcreate?previousPage=%2Fwelcome%3Fproject%3Dmoneycounter-376608%26authuser%3D1&organizationId=0&authuser=1) in Google Cloud. After creation the project, go to the APIs & Services in navigation menu. Choose Library section. Then, in the search field input Gmail API click on this app and click on button "Enable". With Google Sheets API do the same things.
 
