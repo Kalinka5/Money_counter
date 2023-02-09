@@ -4,7 +4,7 @@
 ![Watchers](https://img.shields.io/github/watchers/Kalinka5/Money_counter?style=social)
 ![Stars](https://img.shields.io/github/stars/Kalinka5/Money_counter?style=social)
 
-:gem: PROGRAM IS USED TO **COUNT YOUR SUBSCRIPTIONS SPENDING**:moneybag: BY USING **GOOGLE** AND **SPREADSHEETS API**S.
+:gem: Program is used to **COUNT YOUR SUBSCRIPTIONS SPENDING**:moneybag: by using **GMAIL** and **GOOGLE SHEETS APIs**.
 
 ![Money](https://user-images.githubusercontent.com/106172806/216789011-9b0dc0f5-700c-4c66-a1a3-4393c1f24cd0.gif)
 
