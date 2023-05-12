@@ -1,5 +1,6 @@
 from gmail import get_mails_list, parsing_letters, delete_emails
-from spreadsheet import get_columns_update, get_rows_update, spreadsheet_chunks_update, get_last_index, get_part_of_table
+from spreadsheet import get_columns_update, get_rows_update, spreadsheet_chunks_update, \
+    get_last_index, get_part_of_table
 from typing import List
 from logger import Logger
 import traceback
@@ -75,11 +76,12 @@ if __name__ == '__main__':
         SCOPES = ['https://www.googleapis.com/auth/spreadsheets', 'https://mail.google.com/']
 
         # Create gmail and sheet services
-        sheet_service = create_service(CLIENT_SECRET_FILE, "sheets", "v4", SCOPES, config["gmail"], logger)
-        gmail_service = create_service(CLIENT_SECRET_FILE, "gmail", "v1", SCOPES, config["gmail"], logger)
+        gmail = os.environ.get("Gmail_money", "")
+        sheet_service = create_service(CLIENT_SECRET_FILE, "sheets", "v4", SCOPES, gmail, logger)
+        gmail_service = create_service(CLIENT_SECRET_FILE, "gmail", "v1", SCOPES, gmail, logger)
 
         # All values to interact with program
-        table_id = config["spreadsheetID"]
+        table_id = os.environ.get("spreadsheetID", "")
         sheet_name = config["sheetName"]
         column_music = config["columnAppleMusic"]
         column_cloud = config["column_iCloud"]
