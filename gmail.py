@@ -112,4 +112,3 @@ def delete_emails(service, messages_for_trash, log):
         exc_type, _, exc_tb = sys.exc_info()
         log.error(f'Unexpected error {exc_type} at {os.path.split(__file__)[1]} at line {exc_tb.tb_next.tb_lineno}.\n'
                   f'Info: {e}', isError=True)
-
